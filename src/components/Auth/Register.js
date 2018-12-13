@@ -10,6 +10,7 @@ import {
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import firebase from "../../firebase";
+import md5 from "md5";
 
 const GridColumn = Grid.Column;
 
@@ -20,7 +21,8 @@ class Register extends Component {
     Password: "",
     PasswordConfirmation: "",
     Errors: [],
-    Loading: false
+    Loading: false,
+    userRef: firebase.database().ref("users")
   };
 
   handleChange = e => {
@@ -77,9 +79,29 @@ class Register extends Component {
         .createUserWithEmailAndPassword(this.state.Email, this.state.Password)
         .then(createdUser => {
           console.log(createdUser);
-          this.setState({
-            Loading: false
-          });
+          createdUser.user
+            .updateProfile({
+              displayName: this.state.UserName,
+              photoURL: `http://gravatar.com/avatar/${md5(
+                createdUser.user.email
+              )}?d=identicon`
+            })
+            .then(() => {
+              console.log("User details updated...");
+              this.saveUser(createdUser).then(() => {
+                console.log("user saved...");
+                this.setState({
+                  Loading: false
+                });
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              this.setState({
+                Errors: this.state.Errors.concat(err),
+                Loading: false
+              });
+            });
         })
         .catch(err => {
           console.log(err);
@@ -91,10 +113,16 @@ class Register extends Component {
     }
   };
 
+  saveUser = createdUser => {
+    return this.state.userRef.child(createdUser.user.uid).set({
+      name: createdUser.user.displayName,
+      avatar: createdUser.user.photoURL,
+      email: createdUser.user.email
+    });
+  };
+
   handleInputError = (errors, inputName) => {
-    return errors.some(error =>
-      error.message.toLowerCase().includes(inputName)
-    )
+    return errors.some(error => error.message.toLowerCase().includes(inputName))
       ? "error"
       : " ";
   };
