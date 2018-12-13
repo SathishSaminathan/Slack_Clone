@@ -18,7 +18,8 @@ class Register extends Component {
     UserName: "",
     Email: "",
     Password: "",
-    PasswordConfirmation: ""
+    PasswordConfirmation: "",
+    Errors: []
   };
 
   handleChange = e => {
@@ -27,19 +28,58 @@ class Register extends Component {
     });
   };
 
-  handleSubmit=(e)=>{
-    e.preventDefault();
-    firebase.auth().createUserWithEmailAndPassword(this.state.Email,this.state.Password)
-    .then(createdUser=>{
-        console.log(createdUser);
-    })
-    .catch(err=>{
-        console.log(err)
-    })
-  }
-  render() {
+  isFormValid = () => {
+    let errors = [];
+    let error;
+    if (this.isFormEmpty(this.state)) {
+      error = { message: "Fill all Fields" };
+      this.setState({ Errors: errors.concat(error) });
+    } else if (!this.isPasswordValid(this.state)) {
+      error = { message: "Passwords are not valid" };
+      this.setState({ Errors: errors.concat(error) });
+    } else {
+      return true;
+    }
+  };
 
-    const { UserName, Email, Password, PasswordConfirmation}= this.state;
+  isPasswordValid = ({ Password, PasswordConfirmation }) => {
+    if (Password.length < 6 || PasswordConfirmation.length < 6) {
+      return false;
+    } else if (Password !== PasswordConfirmation) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  displayErrors = errors =>
+    errors.map((error, i) => <p key={i}>{error.message}</p>);
+
+  isFormEmpty = ({ UserName, Email, Password, PasswordConfirmation }) => {
+    return (
+      !UserName.length ||
+      !Email.length ||
+      !Password.length ||
+      !PasswordConfirmation.length
+    );
+  };
+
+  handleSubmit = e => {
+    if (this.isFormValid()) {
+      e.preventDefault();
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.state.Email, this.state.Password)
+        .then(createdUser => {
+          console.log(createdUser);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  };
+  render() {
+    const { UserName, Email, Password, PasswordConfirmation, Errors } = this.state;
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <GridColumn style={{ maxWidth: 450 }}>
@@ -94,6 +134,12 @@ class Register extends Component {
               </Button>
             </Segment>
           </Form>
+          {Errors.length > 0 && (
+            <Message error>
+              <h3>Error</h3>
+              {this.displayErrors(Errors)}
+            </Message>
+          )}
           <Message>
             Already a user? <Link to="/login">Login</Link>
           </Message>
