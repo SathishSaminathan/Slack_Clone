@@ -29,7 +29,7 @@ class Root extends Component {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         console.log(user);
-        this.props.setser(user);
+        this.props.setUser(user);
         this.props.history.push("/");
       }
     });
