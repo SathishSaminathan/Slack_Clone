@@ -15,6 +15,7 @@ import firebase from "./firebase";
 import App from "./components/App";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
+import Spinner from "./widgets/Spinner";
 import rootReducer from "./reducers";
 import { setUser } from "./actions";
 
@@ -24,16 +25,20 @@ const store = createStore(rootReducer, composeWithDevTools());
 
 class Root extends Component {
   componentDidMount() {
+    console.log("redux value...", this.props.isLoading);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user)
-        this.props.setUser(user)
+        console.log(user);
+        this.props.setser(user);
         this.props.history.push("/");
       }
     });
   }
   render() {
-    return (
+    console.log("redux value...", this.props.isLoading);
+    return this.props.isLoading ? (
+      <Spinner />
+    ) : (
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
@@ -43,9 +48,11 @@ class Root extends Component {
   }
 }
 
+const mapStateFromProps = state => ({ isLoading: state.user.isLoading, currentUser:state.user.currentUser });
+
 const RootWithAuth = withRouter(
   connect(
-    null,
+    mapStateFromProps,
     { setUser }
   )(Root)
 );
