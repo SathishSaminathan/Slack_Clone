@@ -8,12 +8,16 @@ const GridRow = Grid.Row;
 const HeaderContent = Header.Content;
 
 class UserPanel extends Component {
+  state = {
+    user: this.props.currentUser
+  };
+
   dropDownOptions = () => [
     {
       key: "user",
       text: (
         <span>
-          Signed in as <strong>User</strong>
+          Signed in as <strong>{this.state.user.displayName}</strong>
         </span>
       ),
       disabled: true
@@ -66,7 +70,7 @@ class UserPanel extends Component {
             as="h4"
           >
             <Dropdown
-              trigger={<span>User</span>}
+              trigger={<span>{this.state.user.displayName}</span>}
               options={this.dropDownOptions()}
             />
           </Header>

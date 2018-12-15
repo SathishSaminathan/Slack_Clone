@@ -26,18 +26,19 @@ const store = createStore(rootReducer, composeWithDevTools());
 class Root extends Component {
   componentDidMount() {
     console.log("redux value...", this.props.isLoading);
+    console.log("redux value User...", this.props.currentUser);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.props.setUser(user);
+        console.log("redux value User...", this.props.currentUser);
         this.props.history.push("/");
       } else {
-        this.props.history.push("/login");
         this.props.clearUser();
+        this.props.history.push("/login");
       }
     });
   }
   render() {
-    console.log("redux value...", this.props.isLoading);
     return this.props.isLoading ? (
       <Spinner />
     ) : (
