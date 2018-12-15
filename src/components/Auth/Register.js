@@ -9,8 +9,11 @@ import {
   Icon
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import firebase from "../../firebase";
 import md5 from "md5";
+import { connect } from "react-redux";
+
+import firebase from "../../firebase";
+import { setUser } from "../../actions";
 
 const GridColumn = Grid.Column;
 
@@ -88,11 +91,9 @@ class Register extends Component {
             })
             .then(() => {
               console.log("User details updated...");
+              this.props.setUser(createdUser);
               this.saveUser(createdUser).then(() => {
                 console.log("user saved...");
-                this.setState({
-                  Loading: false
-                });
               });
             })
             .catch(err => {
@@ -214,4 +215,4 @@ class Register extends Component {
   }
 }
 
-export default Register;
+export default connect(null,{setUser})(Register);
