@@ -17,7 +17,7 @@ import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import Spinner from "./widgets/Spinner";
 import rootReducer from "./reducers";
-import { setUser } from "./actions";
+import { setUser, clearUser } from "./actions";
 
 import "semantic-ui-css/semantic.min.css";
 
@@ -28,16 +28,13 @@ class Root extends Component {
     console.log("redux value...", this.props.isLoading);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        console.log(user);
         this.props.setUser(user);
         this.props.history.push("/");
-      }
-      else{
-        console.log(user);
-        this.props.setUser(null);
+      } else {
         this.props.history.push("/login");
+        this.props.clearUser();
       }
-    })
+    });
   }
   render() {
     console.log("redux value...", this.props.isLoading);
@@ -61,7 +58,7 @@ const mapStateFromProps = state => ({
 const RootWithAuth = withRouter(
   connect(
     mapStateFromProps,
-    { setUser }
+    { setUser, clearUser }
   )(Root)
 );
 
