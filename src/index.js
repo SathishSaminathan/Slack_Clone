@@ -32,7 +32,12 @@ class Root extends Component {
         this.props.setUser(user);
         this.props.history.push("/");
       }
-    });
+      else{
+        console.log(user);
+        this.props.setUser(null);
+        this.props.history.push("/login");
+      }
+    })
   }
   render() {
     console.log("redux value...", this.props.isLoading);
@@ -48,7 +53,10 @@ class Root extends Component {
   }
 }
 
-const mapStateFromProps = state => ({ isLoading: state.user.isLoading, currentUser:state.user.currentUser });
+const mapStateFromProps = state => ({
+  isLoading: state.user.isLoading,
+  currentUser: state.user.currentUser
+});
 
 const RootWithAuth = withRouter(
   connect(
