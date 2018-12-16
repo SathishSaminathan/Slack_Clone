@@ -13,6 +13,19 @@ class Channels extends Component {
     User: this.props.currentUser
   };
 
+  componentDidMount() {
+    this.addListener();
+  }
+
+  addListener = () => {
+    let loadedChannels = [];
+    this.state.ChannelsRef.on("child_added", snap => {
+      loadedChannels.push(snap.val());
+      // console.log(loadedChannels);
+      this.setState({ Channels: loadedChannels });
+    });
+  };
+
   handleChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -56,14 +69,33 @@ class Channels extends Component {
       });
   };
 
+  displayChannels = Channels =>
+    Channels.length > 0 &&
+    Channels.map(channel => (
+      <Menu.Item
+        key={channel.id}
+        onClick={() => {
+          console.log("Channel Details....", channel);
+        }}
+        name={channel.name}
+        style={{
+          opacity: 0.7
+        }}
+      >
+        # {channel.name}
+      </Menu.Item>
+    ));
+
   isFormValid = ({ ChannelName, ChannelDetails }) =>
     ChannelName && ChannelDetails;
 
   openModal = () => this.setState({ isModalVisible: true });
 
   closeModal = () => this.setState({ isModalVisible: false });
+
   render() {
     const { Channels, isModalVisible } = this.state;
+
     return (
       <React.Fragment>
         <Menu.Menu
@@ -78,7 +110,8 @@ class Channels extends Component {
             ({Channels.length})
             <Icon name="add" onClick={this.openModal} />
           </Menu.Item>
-          {/* Channels */}
+          {/* Display Channels */}
+          {this.displayChannels(Channels)}
         </Menu.Menu>
         {/* Add Channel Modal */}
         <Modal basic open={isModalVisible} onClose={this.closeModal}>
