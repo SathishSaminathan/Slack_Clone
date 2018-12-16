@@ -21,7 +21,7 @@ class Channels extends Component {
     this.addListener();
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
     this.removeListener();
   }
 
