@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
 
+import firebase from "../../firebase";
+
 class Channels extends Component {
   state = {
     Channels: [],
     isModalVisible: false,
     ChannelName: "",
-    ChannelDetails: ""
+    ChannelDetails: "",
+    ChannelsRef: firebase.database().ref("channels"),
+    User: this.props.currentUser
   };
 
   handleChange = e => {
@@ -15,7 +19,47 @@ class Channels extends Component {
     });
   };
 
-  openModal =()=> this.setState({ isModalVisible:true})
+  handleSubmit = e => {
+    e.preventDefault();
+    if (this.isFormValid(this.state)) {
+      this.addChannel();
+    }
+  };
+
+  addChannel = () => {
+    const { ChannelName, ChannelDetails, ChannelsRef, User } = this.state;
+
+    const key = ChannelsRef.push().key;
+
+    const newChannel = {
+      id: key,
+      name: ChannelName,
+      details: ChannelDetails,
+      createdBy: {
+        name: User.displayName,
+        avatar: User.photoURL
+      }
+    };
+
+    ChannelsRef.child(key)
+      .update(newChannel)
+      .then(() => {
+        this.setState({
+          ChannelName: "",
+          ChannelDetails: "2"
+        });
+        this.closeModal();
+        console.log("Channel Added");
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  isFormValid = ({ ChannelName, ChannelDetails }) =>
+    ChannelName && ChannelDetails;
+
+  openModal = () => this.setState({ isModalVisible: true });
 
   closeModal = () => this.setState({ isModalVisible: false });
   render() {
@@ -32,15 +76,15 @@ class Channels extends Component {
               <Icon name="exchange" /> CHANNELS
             </span>{" "}
             ({Channels.length})
-            <Icon name="add" onClick={this.openModal}/>
+            <Icon name="add" onClick={this.openModal} />
           </Menu.Item>
           {/* Channels */}
         </Menu.Menu>
-         {/* Add Channel Modal */}
+        {/* Add Channel Modal */}
         <Modal basic open={isModalVisible} onClose={this.closeModal}>
           <Modal.Header>Add a Channel</Modal.Header>
           <Modal.Content>
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Field>
                 <Input
                   fluid
@@ -60,7 +104,7 @@ class Channels extends Component {
             </Form>
           </Modal.Content>
           <Modal.Actions>
-            <Button color="green" inverted>
+            <Button color="green" inverted onClick={this.handleSubmit}>
               <Icon name="checkmark" /> Add
             </Button>
             <Button color="red" inverted onClick={this.closeModal}>
