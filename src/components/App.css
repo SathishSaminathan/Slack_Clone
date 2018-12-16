@@ -10,7 +10,8 @@ body,
 /* Messages.js */
 .messages{
     height: 440px ;
-    overflow-y: scroll
+    overflow-y: scroll;
+    max-width: none !important;
 }
 
 /* MessageForm.js */
