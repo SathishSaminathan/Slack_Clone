@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Header, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
 
 import firebase from "../../firebase";
 
@@ -42,6 +42,7 @@ class UserPanel extends Component {
   };
 
   render() {
+    const { user } = this.state;
     return (
       <Grid
         style={{
@@ -60,20 +61,25 @@ class UserPanel extends Component {
               <Icon name="code" />
               <HeaderContent>Dev Chat</HeaderContent>
             </Header>
+            {/* User Dropdown */}
+            <Header
+              inverted
+              style={{
+                padding: "0.25em"
+              }}
+              as="h4"
+            >
+              <Dropdown
+                trigger={
+                  <span>
+                    <Image src={user.photoURL} spaced="right" avatar/>
+                    {user.displayName}
+                  </span>
+                }
+                options={this.dropDownOptions()}
+              />
+            </Header>
           </GridRow>
-          {/* User Dropdown */}
-          <Header
-            inverted
-            style={{
-              padding: "0.2em"
-            }}
-            as="h4"
-          >
-            <Dropdown
-              trigger={<span>{this.state.user.displayName}</span>}
-              options={this.dropDownOptions()}
-            />
-          </Header>
         </GridColumn>
       </Grid>
     );
