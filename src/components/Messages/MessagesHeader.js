@@ -10,7 +10,6 @@ class MessagesHeader extends Component {
         <Header
           floated="left"
           as="h2"
-          fluid
           style={{
             marginBottom: 0
           }}
