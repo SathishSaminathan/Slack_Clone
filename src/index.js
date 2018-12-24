@@ -43,9 +43,9 @@ class Root extends Component {
       <Spinner />
     ) : (
       <Switch>
+        <Route exact path="/" component={App} />
         <Route path="/login" component={Login} />
         <Route path="/register" component={Register} />
-        <Route exact path="/" component={App} />
       </Switch>
     );
   }

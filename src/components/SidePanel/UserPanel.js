@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Grid, Header, Icon, Dropdown, Image } from "semantic-ui-react";
 
+import Spinner from "../../widgets/Spinner";
 import firebase from "../../firebase";
 
 const GridColumn = Grid.Column;
@@ -43,7 +44,7 @@ class UserPanel extends Component {
 
   render() {
     const { user } = this.state;
-    return (
+    return user ? (
       <Grid
         style={{
           background: "#4c3c4c"
@@ -82,7 +83,7 @@ class UserPanel extends Component {
           </GridRow>
         </GridColumn>
       </Grid>
-    );
+    ) : <Spinner/>
   }
 }
 
