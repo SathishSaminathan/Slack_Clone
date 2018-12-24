@@ -10,6 +10,7 @@ import {
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import firebase from "../../firebase";
+const googleAuth = new firebase.auth.GoogleAuthProvider();
 
 const GridColumn = Grid.Column;
 
@@ -62,6 +63,7 @@ class Login extends Component {
           });
         });
     }
+    //firebase.auth().signInWithPopup(googleAuth);
   };
 
   isFormValid = ({ Email, Password }) => Email && Password;

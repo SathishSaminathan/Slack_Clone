@@ -70,6 +70,19 @@ class Register extends Component {
     );
   };
 
+  getPhoto = createdUser => {
+    // fetch(`https://pikmail.herokuapp.com/eduardo.alejandro.pool.ake@gmail.com`, {mode: 'cors'})
+    // .then((res)=>{
+    //   console.log("res...")
+    //   console.log("checkPhoto...",res)
+    // })
+    // let checkPhoto= `http://picasaweb.google.com/data/entry/api/user/sathishcse1975@gmail.com?alt=json`
+    // console.log("checkPhoto",checkPhoto)
+    let photoUrl=`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`;
+    console.log("photoUrl..", photoUrl)
+    return photoUrl;
+  };
+
   handleSubmit = e => {
     if (this.isFormValid()) {
       e.preventDefault();
@@ -85,9 +98,7 @@ class Register extends Component {
           createdUser.user
             .updateProfile({
               displayName: this.state.UserName,
-              photoURL: `http://gravatar.com/avatar/${md5(
-                createdUser.user.email
-              )}?d=identicon`
+              photoURL: this.getPhoto(createdUser)
             })
             .then(() => {
               console.log("User details updated...");
@@ -215,4 +226,7 @@ class Register extends Component {
   }
 }
 
-export default connect(null,{setUser})(Register);
+export default connect(
+  null,
+  { setUser }
+)(Register);
